@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <title>Game Top Down</title>
+  <title>Test Mouse Events</title>
   <style>
     /* Engine-Specific */
     * {
@@ -30,72 +30,78 @@
   <script src="./engine/components/Polygon.js"></script>
   <script src="./engine/components/Collider.js"></script>
 
-
-
-
-
   <script>
 
 
     class MainScene extends Scene {
       constructor() {
         super()
-        this.instantiate(new HorizontalWallGameObject(), new Vector2(200, 200))
-        this.instantiate(new HorizontalWallGameObject(), new Vector2(400, 200))
 
-        this.instantiate(new HorizontalWallGameObject(), new Vector2(200, 600))
+        //Static text at the top
+        this.instantiate(new GameObject("Title Text Game Object"), new Vector2(20, 20)).addComponent(new TextLabel(), { text: "Button Test - Mouse over, click, and drag button to test events", fillStyle: "Red"})
 
+        //The main button
+        const mainButton = this.instantiate(new GameObject("Main Button Game Object"), new Vector2(400, 200))
+        mainButton.addComponent(new Polygon, {points: [new Vector2(-50, -20), new Vector2(-50, 20), new Vector2(50, 20), new Vector2(50, -20)], fillStyle:"red", strokeStyle: "blue"})
+        mainButton.addComponent(new Collider())
+        mainButton.addComponent(new ButtonController())
 
-        this.instantiate(new VerticalWallGameObject(), new Vector2(100, 300))
-        this.instantiate(new VerticalWallGameObject(), new Vector2(100, 500))
-
-        this.instantiate(new VerticalWallGameObject(), new Vector2(500, 300))
-        this.instantiate(new VerticalWallGameObject(), new Vector2(500, 500))
-
-        this.instantiate(new HeroGameObject(), new Vector2(400, 300))
-
+        //The dynamic text
+        this.instantiate(new GameObject("Mouse Enter Text"), new Vector2(20, 60)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Over Text"), new Vector2(20, 100)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Exit Text"), new Vector2(20, 140)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Down Text"), new Vector2(20, 180)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Up Text"), new Vector2(20, 220)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Up as Button Text"), new Vector2(20, 260)).addComponent(new TextLabel())
+        this.instantiate(new GameObject("Mouse Drag Text"), new Vector2(20, 300)).addComponent(new TextLabel())
+        
       }
     }
 
-    class HorizontalWallGameObject extends GameObject {
-      constructor() {
-        super("HorizontalWallGameObject")
-        this.addComponent(new Polygon(), { points: [new Vector2(-100, -10), new Vector2(100, -10), new Vector2(100, 10), new Vector2(-100, 10)] })
-      }
-    }
+    
 
-    class VerticalWallGameObject extends GameObject {
-      constructor() {
-        super("VerticalWallGameObject")
-        this.addComponent(new Polygon(), { points: [new Vector2(-10, -100), new Vector2(10, -100), new Vector2(10, 100), new Vector2(-10, 100)] })
-      }
-    }
-
-    class HeroGameObject extends GameObject {
-      constructor() {
-        super("HeroGameObject")
-        this.addComponent(new Polygon(), { points: [new Vector2(-10, -10), new Vector2(10, -10), new Vector2(10, 10), new Vector2(-10, 10)], fillStyle: "red" })
-        this.addComponent(new Collider())
-        this.addComponent(new HeroController())
-      }
-    }
-
-    class HeroController extends Component{
-      speed = 100
+    class ButtonController extends Component{
+      frames = 0
       update(){
-        let offset = new Vector2(0,0)
-        if(Input.keysDown.includes("ArrowRight")) offset = offset.add(new Vector2(1, 0))
-        if(Input.keysDown.includes("ArrowLeft")) offset = offset.add(new Vector2(-1, 0))
-        if(Input.keysDown.includes("ArrowUp")) offset = offset.add(new Vector2(0, -1))
-        if(Input.keysDown.includes("ArrowDown")) offset = offset.add(new Vector2(0, 1))
-        let c = offset
-        let a = c.normalized()
-        let b = offset.times(Time.deltaTime * this.speed)
-        if(b.magnitude != 0)
-          console.log("Move")
-        if(Number.isNaN(b.x))
-          console.log("NaN")
-        this.transform.position = this.transform.position.add(b)
+        if(this.frames%3==0){
+        GameObject.find("Mouse Enter Text").getComponent(TextLabel).text = GameObject.find("Mouse Enter Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Over Text").getComponent(TextLabel).text = GameObject.find("Mouse Over Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Exit Text").getComponent(TextLabel).text = GameObject.find("Mouse Exit Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Down Text").getComponent(TextLabel).text = GameObject.find("Mouse Down Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Up Text").getComponent(TextLabel).text = GameObject.find("Mouse Up Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Up as Button Text").getComponent(TextLabel).text = GameObject.find("Mouse Up as Button Text").getComponent(TextLabel).text.slice(0, -1)
+        GameObject.find("Mouse Drag Text").getComponent(TextLabel).text = GameObject.find("Mouse Drag Text").getComponent(TextLabel).text.slice(0, -1)
+        }
+        this.frames++
+      }
+      onMouseEnter(){
+        console.log("Mouse Enter")
+        GameObject.find("Mouse Enter Text").getComponent(TextLabel).text = "Mouse Enter"
+      }
+      onMouseOver(){
+        console.log("Mouse Over")
+        GameObject.find("Mouse Over Text").getComponent(TextLabel).text = "Mouse Over"
+      }
+      onMouseExit(){
+        console.log("Mouse Exit")
+        GameObject.find("Mouse Exit Text").getComponent(TextLabel).text = "Mouse Exit"
+      }
+      onMouseDown(){
+        console.log("Mouse Down")
+        GameObject.find("Mouse Down Text").getComponent(TextLabel).text = "Mouse Down"
+      }
+      onMouseUp(){
+        console.log("Mouse Up")
+        GameObject.find("Mouse Up Text").getComponent(TextLabel).text = "Mouse Up"
+      }
+      onMouseUpAsButton(){
+        console.log("Mouse Up as Button")
+        GameObject.find("Mouse Up as Button Text").getComponent(TextLabel).text = "Mouse Up as Button"
+      }
+      onMouseDrag(){
+        console.log("Mouse Drag")
+        GameObject.find("Mouse Drag Text").getComponent(TextLabel).text = "Mouse Drag"
+        this.transform.position = this.transform.position.add(Input.mousePositionDelta)
       }
     }
 
