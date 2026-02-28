@@ -22,7 +22,7 @@ class GameObject{
         Object.assign(component, options)
         this.components.push(component)
         component.gameObject = this
-        component.start?.()
+        // component.start?.()
         return component
     }
 
