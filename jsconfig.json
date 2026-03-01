@@ -5,6 +5,7 @@
             "esnext",
             "dom"
         ],
+        "target":"esnext",
     },
     "exclude": [
         "before"
